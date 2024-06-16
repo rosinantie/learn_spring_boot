@@ -1,21 +1,42 @@
-package com.example.demo.Student;
+package com.example.demo.Student; // Ensure this matches your actual package structure
+
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.SequenceGenerator;
+import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
 import java.time.LocalDate;
+import java.time.Period;
 
+@Entity
+@Table(name = "students")
 public class Student {
+
+  @Id
+  @SequenceGenerator(name = "student_sequence", sequenceName = "student_sequence", allocationSize = 1)
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_sequence")
   private Long id;
   private String name;
-  private String Email;
-  private LocalDate dob;
+  private String email;
+  private LocalDate dob; // Date of birth
+  @Transient
   private Integer age;
 
-  public Student(Long id, String name, String email, LocalDate dob, Integer age) {
+  // Default constructor
+  public Student() {
+  }
+
+  public Student(Long id, String name, String email, LocalDate dob) {
     this.id = id;
     this.name = name;
-    Email = email;
+    this.email = email;
     this.dob = dob;
-    this.age = age;
   }
+
+  // Getters and setters
 
   public Long getId() {
     return id;
@@ -34,11 +55,11 @@ public class Student {
   }
 
   public String getEmail() {
-    return Email;
+    return email;
   }
 
   public void setEmail(String email) {
-    Email = email;
+    this.email = email;
   }
 
   public LocalDate getDob() {
@@ -49,17 +70,24 @@ public class Student {
     this.dob = dob;
   }
 
+  // Calculate age based on date of birth (dob)
   public Integer getAge() {
-    return age;
+    if (dob != null) {
+      LocalDate now = LocalDate.now();
+      return Period.between(this.dob, now).getYears();
+    } else {
+      return null; // Or handle default age appropriately
+    }
   }
 
-  public void setAge(Integer age) {
-    this.age = age;
-  }
-
+  // toString method for debugging purposes
   @Override
   public String toString() {
-    return "Student [id=" + id + ", name=" + name + ", Email=" + Email + ", dob=" + dob + ", age=" + age + "]";
+    return "Student{" +
+        "id=" + id +
+        ", name='" + name + '\'' +
+        ", email='" + email + '\'' +
+        ", dob=" + dob +
+        '}';
   }
-
 }
